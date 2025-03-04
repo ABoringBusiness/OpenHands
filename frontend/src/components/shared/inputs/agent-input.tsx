@@ -1,6 +1,13 @@
-import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import { I18nKey } from "#/i18n/declaration";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
+import React from "react";
 
 interface AgentInputProps {
   isDisabled: boolean;
@@ -20,27 +27,23 @@ export function AgentInput({
       <label htmlFor="agent" className="font-[500] text-[#A3A3A3] text-xs">
         {t(I18nKey.SETTINGS_FORM$AGENT_LABEL)}
       </label>
-      <Autocomplete
-        isDisabled={isDisabled}
-        isRequired
-        id="agent"
-        aria-label="Agent"
-        data-testid="agent-input"
-        name="agent"
-        defaultSelectedKey={defaultValue}
-        isClearable={false}
-        inputProps={{
-          classNames: {
-            inputWrapper: "bg-[#27272A] rounded-md text-sm px-3 py-[10px]",
-          },
-        }}
-      >
-        {agents.map((agent) => (
-          <AutocompleteItem key={agent} value={agent}>
-            {agent}
-          </AutocompleteItem>
-        ))}
-      </Autocomplete>
+      <Select defaultValue={defaultValue} name="agent" disabled={isDisabled}>
+        <SelectTrigger
+          id="agent"
+          aria-label="Agent"
+          data-testid="agent-input"
+          className="bg-[#27272A] rounded-md text-sm px-3 py-[10px]"
+        >
+          <SelectValue placeholder="Select an agent" />
+        </SelectTrigger>
+        <SelectContent>
+          {agents.map((agent) => (
+            <SelectItem key={agent} value={agent}>
+              {agent}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </fieldset>
   );
 }

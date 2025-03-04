@@ -1,5 +1,6 @@
-import clsx from "clsx";
+import { cn } from "../../../lib/utils";
 import React from "react";
+import { Button } from "./button";
 
 interface ModalButtonProps {
   testId?: string;
@@ -24,13 +25,16 @@ export function ModalButton({
   disabled,
   intent,
 }: ModalButtonProps) {
+  const shadcnVariant = variant === "default" ? "default" : "ghost";
+  
   return (
-    <button
+    <Button
       data-testid={testId}
       type={type === "submit" ? "submit" : "button"}
       disabled={disabled}
       onClick={onClick}
-      className={clsx(
+      variant={shadcnVariant}
+      className={cn(
         variant === "default" && "text-sm font-[500] py-[10px] rounded",
         variant === "text-like" && "text-xs leading-4 font-normal",
         icon && "flex items-center justify-center gap-2",
@@ -42,6 +46,6 @@ export function ModalButton({
     >
       {icon}
       {text}
-    </button>
+    </Button>
   );
 }

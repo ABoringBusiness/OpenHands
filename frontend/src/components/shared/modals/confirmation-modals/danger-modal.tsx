@@ -1,11 +1,12 @@
 import { BaseModal } from "./base-modal";
+import React from "react";
 
 interface DangerModalProps {
   testId?: string;
-
   title: string;
   description: string;
-
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
   buttons: {
     danger: { text: string; onClick: () => void };
     cancel: { text: string; onClick: () => void };
@@ -16,6 +17,8 @@ export function DangerModal({
   testId,
   title,
   description,
+  isOpen,
+  onOpenChange,
   buttons,
 }: DangerModalProps) {
   return (
@@ -23,6 +26,8 @@ export function DangerModal({
       testId={testId}
       title={title}
       description={description}
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
       buttons={[
         {
           text: buttons.danger.text,

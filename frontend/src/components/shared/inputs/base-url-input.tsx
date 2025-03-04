@@ -1,6 +1,7 @@
-import { Input } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import { I18nKey } from "#/i18n/declaration";
+import { Input } from "./input";
+import React from "react";
 
 interface BaseUrlInputProps {
   isDisabled: boolean;
@@ -16,14 +17,11 @@ export function BaseUrlInput({ isDisabled, defaultValue }: BaseUrlInputProps) {
         {t(I18nKey.SETTINGS_FORM$BASE_URL_LABEL)}
       </label>
       <Input
-        isDisabled={isDisabled}
+        disabled={isDisabled}
         id="base-url"
         name="base-url"
         defaultValue={defaultValue}
         aria-label="Base URL"
-        classNames={{
-          inputWrapper: "bg-[#27272A] rounded-md text-sm px-3 py-[10px]",
-        }}
       />
     </fieldset>
   );

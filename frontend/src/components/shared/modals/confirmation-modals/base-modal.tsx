@@ -1,43 +1,19 @@
 import React from "react";
-import { ModalBody } from "../modal-body";
-import { ModalButton } from "../../buttons/modal-button";
+import { Modal } from "../modal";
+import { Button } from "../../buttons/button";
 
 interface ButtonConfig {
   text: string;
   onClick: () => void;
-  className: React.HTMLProps<HTMLButtonElement>["className"];
-}
-
-interface BaseModalTitleProps {
-  title: React.ReactNode;
-}
-
-export function BaseModalTitle({ title }: BaseModalTitleProps) {
-  return (
-    <span className="text-xl leading-6 -tracking-[0.01em] font-semibold">
-      {title}
-    </span>
-  );
-}
-
-interface BaseModalDescriptionProps {
-  description?: React.ReactNode;
-  children?: React.ReactNode;
-}
-
-export function BaseModalDescription({
-  description,
-  children,
-}: BaseModalDescriptionProps) {
-  return (
-    <span className="text-xs text-[#A3A3A3]">{children || description}</span>
-  );
+  className?: string;
 }
 
 interface BaseModalProps {
   testId?: string;
   title: string;
   description: string;
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
   buttons: ButtonConfig[];
 }
 
@@ -45,25 +21,37 @@ export function BaseModal({
   testId,
   title,
   description,
+  isOpen = true,
+  onOpenChange = () => {},
   buttons,
 }: BaseModalProps) {
-  return (
-    <ModalBody testID={testId}>
-      <div className="flex flex-col gap-2 self-start">
-        <BaseModalTitle title={title} />
-        <BaseModalDescription description={description} />
-      </div>
+  const footerContent = (
+    <div className="flex flex-col gap-2 w-full">
+      {buttons.map((button, index) => (
+        <Button
+          key={index}
+          onClick={button.onClick}
+          className={button.className}
+          variant={index === 0 ? "destructive" : "secondary"}
+        >
+          {button.text}
+        </Button>
+      ))}
+    </div>
+  );
 
-      <div className="flex flex-col gap-2 w-full">
-        {buttons.map((button, index) => (
-          <ModalButton
-            key={index}
-            onClick={button.onClick}
-            text={button.text}
-            className={button.className}
-          />
-        ))}
+  return (
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      title={title}
+      description={description}
+      footerContent={footerContent}
+      testId={testId}
+    >
+      <div className="flex flex-col gap-2 self-start">
+        <span className="text-xs text-[#A3A3A3]">{description}</span>
       </div>
-    </ModalBody>
+    </Modal>
   );
 }

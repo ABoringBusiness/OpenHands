@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import SecurityInvariant from "./invariant/invariant";
 import { I18nKey } from "#/i18n/declaration";
-import { BaseModal } from "../base-modal/base-modal";
+import { Modal } from "../modal";
 
 interface SecurityProps {
   isOpen: boolean;
@@ -28,15 +28,14 @@ function Security({ isOpen, onOpenChange, securityAnalyzer }: SecurityProps) {
       : () => <div>{t(I18nKey.SECURITY$UNKNOWN_ANALYZER_LABEL)}</div>;
 
   return (
-    <BaseModal
+    <Modal
       isOpen={isOpen && !!securityAnalyzer}
-      contentClassName="max-w-[80%] h-[80%]"
-      bodyClassName="px-0 py-0 max-h-[100%]"
       onOpenChange={onOpenChange}
-      title=""
+      className="max-w-[80%] h-[80%]"
+      contentClassName="px-0 py-0 max-h-[100%]"
     >
       <AnalyzerComponent />
-    </BaseModal>
+    </Modal>
   );
 }
 

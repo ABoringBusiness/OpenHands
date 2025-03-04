@@ -3,10 +3,11 @@ import { Link } from "react-router";
 import { useAIConfigOptions } from "#/hooks/query/use-ai-config-options";
 import { I18nKey } from "#/i18n/declaration";
 import { LoadingSpinner } from "../../loading-spinner";
-import { ModalBackdrop } from "../modal-backdrop";
+import { Modal } from "../modal";
 import { SettingsForm } from "./settings-form";
 import { Settings } from "#/types/settings";
 import { DEFAULT_SETTINGS } from "#/services/settings";
+import React, { useState } from "react";
 
 interface SettingsModalProps {
   settings?: Settings;
@@ -16,20 +17,22 @@ interface SettingsModalProps {
 export function SettingsModal({ onClose, settings }: SettingsModalProps) {
   const aiConfigOptions = useAIConfigOptions();
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      onClose();
+    }
+  };
 
   return (
-    <ModalBackdrop>
-      <div
-        data-testid="ai-config-modal"
-        className="bg-base-secondary min-w-[384px] p-6 rounded-xl flex flex-col gap-2 border border-tertiary"
-      >
-        {aiConfigOptions.error && (
-          <p className="text-danger text-xs">{aiConfigOptions.error.message}</p>
-        )}
-        <span className="text-xl leading-6 font-semibold -tracking-[0.01em]">
-          {t(I18nKey.AI_SETTINGS$TITLE)}
-        </span>
-        <p className="text-xs text-[#A3A3A3]">
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={handleOpenChange}
+      title={t(I18nKey.AI_SETTINGS$TITLE)}
+      description={
+        <>
           {t(I18nKey.SETTINGS$DESCRIPTION)} For other options,{" "}
           <Link
             data-testid="advanced-settings-link"
@@ -38,20 +41,26 @@ export function SettingsModal({ onClose, settings }: SettingsModalProps) {
           >
             see advanced settings
           </Link>
-        </p>
-        {aiConfigOptions.isLoading && (
-          <div className="flex justify-center">
-            <LoadingSpinner size="small" />
-          </div>
-        )}
-        {aiConfigOptions.data && (
-          <SettingsForm
-            settings={settings || DEFAULT_SETTINGS}
-            models={aiConfigOptions.data?.models}
-            onClose={onClose}
-          />
-        )}
-      </div>
-    </ModalBackdrop>
+        </>
+      }
+      testId="ai-config-modal"
+      className="min-w-[384px] border border-tertiary"
+    >
+      {aiConfigOptions.error && (
+        <p className="text-danger text-xs">{aiConfigOptions.error.message}</p>
+      )}
+      {aiConfigOptions.isLoading && (
+        <div className="flex justify-center">
+          <LoadingSpinner size="small" />
+        </div>
+      )}
+      {aiConfigOptions.data && (
+        <SettingsForm
+          settings={settings || DEFAULT_SETTINGS}
+          models={aiConfigOptions.data?.models}
+          onClose={onClose}
+        />
+      )}
+    </Modal>
   );
 }

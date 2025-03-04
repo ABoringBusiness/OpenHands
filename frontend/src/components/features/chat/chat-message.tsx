@@ -2,10 +2,11 @@ import React from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { code } from "../markdown/code";
-import { cn } from "#/utils/utils";
+import { cn } from "../../../utils/utils";
 import { ul, ol } from "../markdown/list";
-import { CopyToClipboardButton } from "#/components/shared/buttons/copy-to-clipboard-button";
+import { CopyToClipboardButton } from "../../shared/buttons/copy-to-clipboard-button";
 import { anchor } from "../markdown/anchor";
+import { Card, CardContent } from "../../../components/ui/card";
 
 interface ChatMessageProps {
   type: "user" | "assistant";
@@ -40,36 +41,38 @@ export function ChatMessage({
   }, [isCopy]);
 
   return (
-    <article
+    <Card
       data-testid={`${type}-message`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       className={cn(
-        "rounded-xl relative",
+        "relative border-0",
         "flex flex-col gap-2",
-        type === "user" && " max-w-[305px] p-4 bg-tertiary self-end",
-        type === "assistant" && "mt-6 max-w-full bg-tranparent",
+        type === "user" && "max-w-[305px] bg-tertiary self-end",
+        type === "assistant" && "mt-6 max-w-full bg-transparent shadow-none",
       )}
     >
-      <CopyToClipboardButton
-        isHidden={!isHovering}
-        isDisabled={isCopy}
-        onClick={handleCopyToClipboard}
-        mode={isCopy ? "copied" : "copy"}
-      />
-      <Markdown
-        className="text-sm overflow-auto break-words"
-        components={{
-          code,
-          ul,
-          ol,
-          a: anchor,
-        }}
-        remarkPlugins={[remarkGfm]}
-      >
-        {message}
-      </Markdown>
-      {children}
-    </article>
+      <CardContent className="p-4">
+        <CopyToClipboardButton
+          isHidden={!isHovering}
+          isDisabled={isCopy}
+          onClick={handleCopyToClipboard}
+          mode={isCopy ? "copied" : "copy"}
+        />
+        <Markdown
+          className="text-sm overflow-auto break-words"
+          components={{
+            code,
+            ul,
+            ol,
+            a: anchor,
+          }}
+          remarkPlugins={[remarkGfm]}
+        >
+          {message}
+        </Markdown>
+        {children}
+      </CardContent>
+    </Card>
   );
 }

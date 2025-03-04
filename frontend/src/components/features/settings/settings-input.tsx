@@ -1,4 +1,7 @@
+import { Input } from "../../../components/shared/inputs/input";
+import { Label } from "../../../components/ui/label";
 import { cn } from "#/utils/utils";
+import React from "react";
 import { OptionalTag } from "./optional-tag";
 
 interface SettingsInputProps {
@@ -29,13 +32,13 @@ export function SettingsInput({
   onChange,
 }: SettingsInputProps) {
   return (
-    <label className={cn("flex flex-col gap-2.5 w-fit", className)}>
+    <div className={cn("flex flex-col gap-2.5 w-fit", className)}>
       <div className="flex items-center gap-2">
         {startContent}
-        <span className="text-sm">{label}</span>
+        <Label className="text-sm">{label}</Label>
         {showOptionalTag && <OptionalTag />}
       </div>
-      <input
+      <Input
         data-testid={testId}
         onChange={(e) => onChange?.(e.target.value)}
         name={name}
@@ -48,6 +51,6 @@ export function SettingsInput({
           "disabled:bg-[#2D2F36] disabled:border-[#2D2F36] disabled:cursor-not-allowed",
         )}
       />
-    </label>
+    </div>
   );
 }

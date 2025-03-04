@@ -1,5 +1,5 @@
 import React from "react";
-import TextareaAutosize from "react-textarea-autosize";
+import { Textarea } from "../../../components/ui/textarea";
 import { useTranslation } from "react-i18next";
 import { I18nKey } from "#/i18n/declaration";
 import { cn } from "#/utils/utils";
@@ -115,7 +115,7 @@ export function ChatInput({
       data-testid="chat-input"
       className="flex items-end justify-end grow gap-1 min-h-6 w-full"
     >
-      <TextareaAutosize
+      <Textarea
         ref={textareaRef}
         name={name}
         placeholder={t(I18nKey.SUGGESTIONS$WHAT_TO_BUILD)}
@@ -128,11 +128,10 @@ export function ChatInput({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         value={value}
-        minRows={1}
-        maxRows={maxRows}
+        rows={1}
         data-dragging-over={isDraggingOver}
         className={cn(
-          "grow text-sm self-center placeholder:text-neutral-400 text-white resize-none outline-none ring-0",
+          "grow text-sm self-center placeholder:text-neutral-400 text-white resize-none outline-none ring-0 min-h-[24px]",
           "transition-all duration-200 ease-in-out",
           isDraggingOver
             ? "bg-neutral-600/50 rounded-lg px-2"
