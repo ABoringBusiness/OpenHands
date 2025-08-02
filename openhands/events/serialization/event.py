@@ -70,6 +70,8 @@ def event_from_dict(data: dict[str, Any]) -> 'Event':
                 metrics = Metrics()
                 if isinstance(value, dict):
                     metrics.accumulated_cost = value.get('accumulated_cost', 0.0)
+                    # Set max_budget_per_task if available
+                    metrics.max_budget_per_task = value.get('max_budget_per_task')
                     for cost in value.get('costs', []):
                         metrics._costs.append(Cost(**cost))
                     metrics.response_latencies = [
@@ -119,6 +121,9 @@ def event_to_dict(event: 'Event') -> dict:
         props.pop(key, None)
     if 'security_risk' in props and props['security_risk'] is None:
         props.pop('security_risk')
+    # Remove task_completed from serialization when it's None (backward compatibility)
+    if 'task_completed' in props and props['task_completed'] is None:
+        props.pop('task_completed')
     if 'action' in d:
         d['args'] = props
         if event.timeout is not None:
@@ -138,7 +143,7 @@ def event_to_dict(event: 'Event') -> dict:
         if hasattr(event, 'success'):
             d['success'] = event.success
     else:
-        raise ValueError('Event must be either action or observation')
+        raise ValueError(f'Event must be either action or observation. has: {event}')
     return d
 
 

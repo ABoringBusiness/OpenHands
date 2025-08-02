@@ -28,6 +28,9 @@ describe("PaymentForm", () => {
       FEATURE_FLAGS: {
         ENABLE_BILLING: true,
         HIDE_LLM_SETTINGS: false,
+        ENABLE_JIRA: false,
+        ENABLE_JIRA_DC: false,
+        ENABLE_LINEAR: false,
       },
     });
   });
@@ -61,25 +64,25 @@ describe("PaymentForm", () => {
     renderPaymentForm();
 
     const topUpInput = await screen.findByTestId("top-up-input");
-    await user.type(topUpInput, "50.12");
+    await user.type(topUpInput, "50");
 
     const topUpButton = screen.getByText("PAYMENT$ADD_CREDIT");
     await user.click(topUpButton);
 
-    expect(createCheckoutSessionSpy).toHaveBeenCalledWith(50.12);
+    expect(createCheckoutSessionSpy).toHaveBeenCalledWith(50);
   });
 
-  it("should round the top-up amount to two decimal places", async () => {
+  it("should only accept integer values", async () => {
     const user = userEvent.setup();
     renderPaymentForm();
 
     const topUpInput = await screen.findByTestId("top-up-input");
-    await user.type(topUpInput, "50.125456");
+    await user.type(topUpInput, "50");
 
     const topUpButton = screen.getByText("PAYMENT$ADD_CREDIT");
     await user.click(topUpButton);
 
-    expect(createCheckoutSessionSpy).toHaveBeenCalledWith(50.13);
+    expect(createCheckoutSessionSpy).toHaveBeenCalledWith(50);
   });
 
   it("should disable the top-up button if the user enters an invalid amount", async () => {
@@ -100,7 +103,7 @@ describe("PaymentForm", () => {
     renderPaymentForm();
 
     const topUpInput = await screen.findByTestId("top-up-input");
-    await user.type(topUpInput, "50.12");
+    await user.type(topUpInput, "50");
 
     const topUpButton = screen.getByText("PAYMENT$ADD_CREDIT");
     await user.click(topUpButton);
@@ -114,7 +117,7 @@ describe("PaymentForm", () => {
       renderPaymentForm();
 
       const topUpInput = await screen.findByTestId("top-up-input");
-      await user.type(topUpInput, "-50.12");
+      await user.type(topUpInput, "-50");
 
       const topUpButton = screen.getByText("PAYMENT$ADD_CREDIT");
       await user.click(topUpButton);
@@ -139,6 +142,8 @@ describe("PaymentForm", () => {
       const user = userEvent.setup();
       renderPaymentForm();
 
+      // With type="number", the browser would prevent non-numeric input,
+      // but we'll test the validation logic anyway
       const topUpInput = await screen.findByTestId("top-up-input");
       await user.type(topUpInput, "abc");
 
@@ -154,6 +159,20 @@ describe("PaymentForm", () => {
 
       const topUpInput = await screen.findByTestId("top-up-input");
       await user.type(topUpInput, "9"); // test assumes the minimum is 10
+
+      const topUpButton = screen.getByText("PAYMENT$ADD_CREDIT");
+      await user.click(topUpButton);
+
+      expect(createCheckoutSessionSpy).not.toHaveBeenCalled();
+    });
+
+    test("user enters a decimal value", async () => {
+      const user = userEvent.setup();
+      renderPaymentForm();
+
+      // With step="1", the browser would validate this, but we'll test our validation logic
+      const topUpInput = await screen.findByTestId("top-up-input");
+      await user.type(topUpInput, "50.5");
 
       const topUpButton = screen.getByText("PAYMENT$ADD_CREDIT");
       await user.click(topUpButton);

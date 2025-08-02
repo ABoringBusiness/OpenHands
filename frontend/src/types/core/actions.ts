@@ -6,11 +6,22 @@ export interface UserMessageAction extends OpenHandsActionEvent<"message"> {
   args: {
     content: string;
     image_urls: string[];
+    file_urls: string[];
+  };
+}
+
+export interface SystemMessageAction extends OpenHandsActionEvent<"system"> {
+  source: "agent" | "environment";
+  args: {
+    content: string;
+    tools: Array<Record<string, unknown>> | null;
+    openhands_version: string | null;
+    agent_class: string | null;
   };
 }
 
 export interface CommandAction extends OpenHandsActionEvent<"run"> {
-  source: "agent";
+  source: "agent" | "user";
   args: {
     command: string;
     security_risk: ActionSecurityRisk;
@@ -26,6 +37,7 @@ export interface AssistantMessageAction
   args: {
     thought: string;
     image_urls: string[] | null;
+    file_urls: string[];
     wait_for_response: boolean;
   };
 }
@@ -52,7 +64,6 @@ export interface FinishAction extends OpenHandsActionEvent<"finish"> {
   source: "agent";
   args: {
     final_thought: string;
-    task_completed: "success" | "failure" | "partial";
     outputs: Record<string, unknown>;
     thought: string;
   };
@@ -142,9 +153,19 @@ export interface RecallAction extends OpenHandsActionEvent<"recall"> {
   };
 }
 
+export interface MCPAction extends OpenHandsActionEvent<"call_tool_mcp"> {
+  source: "agent";
+  args: {
+    name: string;
+    arguments: Record<string, unknown>;
+    thought?: string;
+  };
+}
+
 export type OpenHandsAction =
   | UserMessageAction
   | AssistantMessageAction
+  | SystemMessageAction
   | CommandAction
   | IPythonAction
   | ThinkAction
@@ -156,4 +177,5 @@ export type OpenHandsAction =
   | FileEditAction
   | FileWriteAction
   | RejectAction
-  | RecallAction;
+  | RecallAction
+  | MCPAction;
