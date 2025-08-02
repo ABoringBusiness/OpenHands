@@ -1,0 +1,44 @@
+{{- if .Values.openhands.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "openhands.fullname" . }}-data
+  labels:
+    {{- include "openhands.labels" . | nindent 4 }}
+  {{- with .Values.openhands.persistence.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.openhands.persistence.accessMode }}
+  {{- if .Values.openhands.persistence.storageClass }}
+  storageClassName: {{ .Values.openhands.persistence.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.openhands.persistence.size }}
+{{- end }}
+
+{{- if .Values.openhands.workspace.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "openhands.fullname" . }}-workspace
+  labels:
+    {{- include "openhands.labels" . | nindent 4 }}
+  {{- with .Values.openhands.workspace.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.openhands.workspace.accessMode }}
+  {{- if .Values.openhands.workspace.storageClass }}
+  storageClassName: {{ .Values.openhands.workspace.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.openhands.workspace.size }}
+{{- end }}

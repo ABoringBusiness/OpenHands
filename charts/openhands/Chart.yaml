@@ -1,0 +1,9 @@
+apiVersion: v2
+name: openhands
+description: A Helm chart for OpenHands AI assistant
+type: application
+version: 0.1.0
+appVersion: "0.51.1"
+maintainers:
+  - name: OpenHands Team
+    email: openhands@all-hands.dev
